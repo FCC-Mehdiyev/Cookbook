@@ -23,13 +23,7 @@ Compared to my competitors, my application will be easy to use and navigate and 
 
 
 
-### Part 1 UML Class Diagram:
-
-![image](https://user-images.githubusercontent.com/100208400/160670712-d6968da0-7b1a-4c5b-9eda-fa92fa8e56a9.png)
-
-
-
-### Part 2 UML Class Diagram:
+### UML Class Diagram:
 
 ![UML IMG #3](https://user-images.githubusercontent.com/100208400/164994418-ac20d9f9-e0ef-4a75-bf0f-d5141b320217.png)
 ![UML IMG #1](https://user-images.githubusercontent.com/100208400/164994445-5b85a135-0582-475e-9e58-4c1937102327.jpg)
