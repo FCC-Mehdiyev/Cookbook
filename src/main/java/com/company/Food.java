@@ -1,8 +1,16 @@
+// **********************************************************************************
+// Class Name: Food
+// Author: Ayhan Mehdiyev
+// File: Cookbook/src/main/java/com/company/Food.java
+// Description:
+//              This class provides a basic definition of what a food item is in the
+//              context of a cookbook.
+// **********************************************************************************
 package com.company;
 
 import java.io.Serializable;
 
-public abstract class Food implements Serializable {
+public class Food implements Serializable {
 
     // Instance variables
     private String name; // Name of the food
@@ -12,6 +20,12 @@ public abstract class Food implements Serializable {
     public Food() {
         this.name = "";
         this.difficultyRating = "";
+    }
+
+    /** Construct a copy object */
+    public Food(Food food) {
+        this.name = food.getName();
+        this.difficultyRating = food.getDifficultyRating();
     }
 
     /** Construct a Food object with the name and difficulty rating */

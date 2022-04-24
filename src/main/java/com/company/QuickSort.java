@@ -1,3 +1,12 @@
+// **********************************************************************************
+// Class Name: QuickSort
+// Author: Ayhan Mehdiyev
+// File: Cookbook/src/main/java/com/company/QuickSort.java
+// Description:
+//              This class provides methods to sort any given array or ArrayList
+//              of any type (as long as the type in the data structure has a proper
+//              compare method) using the QuickSort algorithm.
+// **********************************************************************************
 package com.company;
 
 import java.util.ArrayList;
@@ -27,10 +36,10 @@ public class QuickSort<E extends Comparable<E>> {
         // Convert the array into a list
         ArrayList<E> list = new ArrayList<E>(Arrays.asList(arr));
         this.sort(list); // Sort the list
+
         // Set the array's values to the list's
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++)
             arr[i] = list.get(i);
-        }
     }
 
     /**
@@ -44,10 +53,10 @@ public class QuickSort<E extends Comparable<E>> {
         // Convert the array into a list
         ArrayList<E> list = new ArrayList<E>(Arrays.asList(arr));
         this.sort(list, first, last); // Sort the list
+
         // Set the array's values to the list's
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++)
             arr[i] = list.get(i);
-        }
     }
 
     /**
@@ -69,9 +78,8 @@ public class QuickSort<E extends Comparable<E>> {
     public void sort(ArrayList<E> list, int first, int last) {
 
         // Edge cases
-        if (list == null || list.size() == 0) {
+        if (list == null || list.size() == 0)
             return;
-        }
 
         if(first < last) {
             // Get the pivot index
@@ -103,19 +111,16 @@ public class QuickSort<E extends Comparable<E>> {
         while (true) {
             // Search forward from left for a value more than the pivot element
             first++;
-            while (list.get(first).compareTo(pivotElement) < 0) {
+            while (list.get(first).compareTo(pivotElement) < 0)
                 first++;
-            }
 
             // Search backward from right for a value less than the pivot element
             last--;
-            while (list.get(last).compareTo(pivotElement) > 0) {
+            while (list.get(last).compareTo(pivotElement) > 0)
                 last--;
-            }
 
-            if (first >= last) {
+            if (first >= last)
                 return last;
-            }
 
             // Swap the last and first value elements
             E temp = list.get(first);
