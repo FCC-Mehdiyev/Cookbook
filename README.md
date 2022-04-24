@@ -1,5 +1,5 @@
 # Cookbook
-### Part 1 of my Major Project Assignment
+### Major Project Assignment
 
 
 #### Who are the users of the software? 
