@@ -31,7 +31,7 @@ public class IngredientsTableProperties {
         this.ingredientName = ingredientsTableProperties.getIngredientName();
         this.ingredientAmount = ingredientsTableProperties.getIngredientAmount();
         this.measuringUnits = ingredientsTableProperties.getMeasuringUnits();
-        this.deleteButton = new Button("X");
+        this.deleteButton = ingredientsTableProperties.getDeleteButton();
     }
 
     /** Construct a Properties object with the ingredient name, amount, and units */

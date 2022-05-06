@@ -15,7 +15,9 @@ public class Help {
 
     /** Returns a String about what the application is and what it does */
     public static String about() {
-        return "Cookbook is an application where you can store and keep track of as many recipes as you want!";
+        return "Cookbook is an application where you can store and keep track of as many recipes as you want!\n" +
+                "You cannot create duplicate cookbooks, and are not intended to create recipes of the same name.\n" +
+                "However, you can get around the recipes restriction through editing the recipe to change the name.";
     }
 
 }

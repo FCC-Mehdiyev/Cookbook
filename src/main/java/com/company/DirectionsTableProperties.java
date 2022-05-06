@@ -25,7 +25,7 @@ public class DirectionsTableProperties {
     /** Construct a copy object */
     public DirectionsTableProperties(DirectionsTableProperties directionsTableProperties) {
         this.instruction = directionsTableProperties.getInstruction();
-        this.deleteButton = new Button("X");
+        this.deleteButton = directionsTableProperties.getDeleteButton();
     }
 
     /** Construct a Properties object with the direction and current step count */

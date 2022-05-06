@@ -9,6 +9,7 @@
 package com.company;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
@@ -193,7 +194,7 @@ public class Utilities {
                 // Check if the app is in the initial opening stage
                 if (initialCheck)
                     // If so, prompt the user again
-                    loadCookbook(recipeTableData, recipes, titleLabel, true);
+                    newCookbook(recipeTableData, recipes, titleLabel, true);
             }
         }
         else {
@@ -303,7 +304,7 @@ public class Utilities {
         ingredientsTableData.clear();
 
         // Add each ingredient to the table
-        for (Map.Entry<String, IngredientUnits> ingredientEntry : recipe.getIngredientsList().entrySet())
+        for (SimpleMap.Entry<String, IngredientUnits> ingredientEntry : recipe.getIngredientsList().entrySet())
             ingredientsTableData.add(new IngredientsTableProperties(ingredientEntry.getKey(), String.valueOf(ingredientEntry.getValue().getAmount()), ingredientEntry.getValue().getUnits().toString()));
     }
 
@@ -399,6 +400,24 @@ public class Utilities {
         tableColumn.setMaxWidth(maxWidth);
         tableColumn.setCellValueFactory(new PropertyValueFactory<>(cellValueProperty));
         return tableColumn;
+    }
+
+    /**
+     * Helper method to create a TableView
+     *
+     * @param layoutX the x coordinate of the TableView
+     * @param layoutY the y coordinate of the TableView
+     * @return a newly created TableView based off the inputs from the user
+     */
+    public static TableView<?> createTableView(int layoutX, int layoutY) {
+        // Create a table view from the arguments
+        TableView<?> tableView = new TableView<>();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setPadding(new Insets(10, 10, 10, 10));
+        tableView.setFocusTraversable(false);
+        tableView.setLayoutX(layoutX);
+        tableView.setLayoutY(layoutY);
+        return tableView;
     }
 
     /**

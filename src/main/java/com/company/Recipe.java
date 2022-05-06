@@ -17,7 +17,7 @@ public class Recipe extends Food implements Serializable, Comparable<Recipe>{
     // Instance variables
     private double totalTime; // The total time it takes to prepare and make this dish
     private int servings; // The amount of servings this recipe makes
-    private Map<String, IngredientUnits> ingredientsList; // The list of ingredients needed to make the dish
+    private SimpleHashMap<String, IngredientUnits> ingredientsList; // The list of ingredients needed to make the dish
     private Queue<String> directionsList; // The list of directions on how to make this dish
 
 
@@ -42,7 +42,7 @@ public class Recipe extends Food implements Serializable, Comparable<Recipe>{
         super(name, difficultyRating);
         this.totalTime = 0;
         this.servings = 0;
-        this.ingredientsList = new Map<String, IngredientUnits>();
+        this.ingredientsList = new SimpleHashMap<String, IngredientUnits>();
         this.directionsList = new LinkedList<String>();
     }
 
@@ -51,12 +51,12 @@ public class Recipe extends Food implements Serializable, Comparable<Recipe>{
         super(name, difficultyRating);
         this.totalTime = totalTime;
         this.servings = servings;
-        this.ingredientsList = new Map<String, IngredientUnits>();
+        this.ingredientsList = new SimpleHashMap<String, IngredientUnits>();
         this.directionsList = new LinkedList<String>();
     }
 
     /** Construct a Recipe object with the name, difficulty rating, total time, servings, ingredients list, and directions list */
-    public Recipe(String name, String difficultyRating, double totalTime, int servings, Map<String, IngredientUnits> ingredientsList, Queue<String> directionsList) {
+    public Recipe(String name, String difficultyRating, double totalTime, int servings, SimpleHashMap<String, IngredientUnits> ingredientsList, Queue<String> directionsList) {
         super(name, difficultyRating);
         this.totalTime = totalTime;
         this.servings = servings;
@@ -75,7 +75,7 @@ public class Recipe extends Food implements Serializable, Comparable<Recipe>{
     }
 
     /** Set the ingredients list of the recipe */
-    public void setIngredientsList(Map<String, IngredientUnits> ingredientsList) {
+    public void setIngredientsList(SimpleHashMap<String, IngredientUnits> ingredientsList) {
         this.ingredientsList = ingredientsList;
     }
 
@@ -95,7 +95,7 @@ public class Recipe extends Food implements Serializable, Comparable<Recipe>{
     }
 
     /** Get the ingredients list of the recipe */
-    public Map<String, IngredientUnits> getIngredientsList() {
+    public SimpleHashMap<String, IngredientUnits> getIngredientsList() {
         return this.ingredientsList;
     }
 

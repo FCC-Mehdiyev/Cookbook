@@ -14,7 +14,6 @@ package com.company;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -32,6 +31,7 @@ import java.util.*;
 public class Main extends Application {
 
     private ArrayList<Recipe> recipes = new ArrayList<>(); // An ArrayList to hold all current recipes
+    private SimpleBST<Recipe> recipesTree = new SimpleBST<>(); // A Binary Search Tree to transfer the recipes to when needed
 
     @Override
     public void start(Stage stage) {
@@ -98,12 +98,8 @@ public class Main extends Application {
 
 
         // Create a TableView for recipes
-        TableView<RecipeTableProperties> recipeTable = new TableView<>();
-        recipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // Disable overflow
-        recipeTable.setPadding(new Insets(10, 10, 10, 10));
-        recipeTable.setFocusTraversable(false);
-        recipeTable.setLayoutX(225);
-        recipeTable.setLayoutY(80);
+        TableView<RecipeTableProperties> recipeTable = (TableView<RecipeTableProperties>) Utilities.createTableView(225, 80);
+
         // Create a list to hold all the rows of the table
         ObservableList<RecipeTableProperties> recipeTableData = FXCollections.observableArrayList();
         recipeTable.setItems(recipeTableData);
@@ -127,6 +123,24 @@ public class Main extends Application {
         TableColumn<RecipeTableProperties, Button> recipeColSix = (TableColumn<RecipeTableProperties, Button>) Utilities.createTableColumn("", 30, 50, "deleteButton");
         recipeTable.getColumns().add(recipeColSix);
 
+        // On initial opening, prompt the user to either create a new cookbook or load a preexisting one
+        // However, make sure this is the initial launch of the application and not going back to
+        // this screen from the second screen
+        if (initialLaunch) {
+            // Attempt to fill the recipes list
+            this.recipes = Utilities.initialUserPrompt(recipeTableData, this.recipes, titleLabel);
+            // If it fails, try to fill the list through deserializing the saved object
+            if (this.recipes.size() < 1) {
+                String fileName = "Cookbooks\\" + titleLabel.getText() + ".dat";
+                if (Utilities.deserializeObject(fileName) != null)
+                    this.recipes = (ArrayList<Recipe>) Utilities.deserializeObject(fileName);
+            }
+        }
+        else {
+            titleLabel.setText(cookbookTitle);
+            Utilities.loadRecipes(recipeTableData, this.recipes); // Sort the new list and update the table
+        }
+
         // Event handler for the open button (fifth column)
         Callback<TableColumn<RecipeTableProperties, Button>, TableCell<RecipeTableProperties, Button>> fifthColumnCellFactory = new Callback<>() {
             @Override
@@ -136,11 +150,20 @@ public class Main extends Application {
                     {
                         // Action handler
                         button.setOnAction(e -> {
-                            // Retrieve the recipe that the user has opened
-                            Recipe recipe = recipes.get(Utilities.findRecipe(recipes, new Recipe(recipeTableData.get(getIndex()).getRecipeName(), recipeTableData.get(getIndex()).getDifficultyRating(),
-                                    Double.parseDouble(recipeTableData.get(getIndex()).getTotalTime()), Integer.parseInt(recipeTableData.get(getIndex()).getServings()))));
-                            // Run the second screen
-                            initiateScreenTwo(stage, recipe, titleLabel.getText());
+                            // Create a temporary recipe from the inputs
+                            Recipe tempRecipe = new Recipe(recipeTableData.get(getIndex()).getRecipeName(), recipeTableData.get(getIndex()).getDifficultyRating(),
+                                    Double.parseDouble(recipeTableData.get(getIndex()).getTotalTime()), Integer.parseInt(recipeTableData.get(getIndex()).getServings()));
+                            // Fill the tree with the contents of the ArrayList
+                            recipesTree.populate(recipes);
+                            // Double check to make sure the recipe exists in the tree
+                            if (recipesTree.search(tempRecipe)) {
+                                // Create a path to the recipe
+                                ArrayList<SimpleBST.TreeNode<Recipe>> path = recipesTree.path(tempRecipe);
+                                // Retrieve the recipe that the user has opened
+                                Recipe recipe = path.get(path.size() - 1).element; // The last element is the recipe
+                                // Run the second screen
+                                initiateScreenTwo(stage, recipe, titleLabel.getText());
+                            }
                         });
                     }
 
@@ -193,24 +216,6 @@ public class Main extends Application {
         recipeColSix.setCellFactory(sixthColumnCellFactory); // Link the handler to the button
 
 
-        // On initial opening, prompt the user to either create a new cookbook or load a preexisting one
-        // However, make sure this is the initial launch of the application and not going back to
-        // this screen from the second screen
-        if (initialLaunch) {
-            // Attempt to fill the recipes list
-            this.recipes = Utilities.initialUserPrompt(recipeTableData, this.recipes, titleLabel);
-            // If it fails, try to fill the list through deserializing the saved object
-            if (this.recipes.size() < 1) {
-                String fileName = "Cookbooks\\" + titleLabel.getText() + ".dat";
-                if (Utilities.deserializeObject(fileName) != null)
-                    this.recipes = (ArrayList<Recipe>) Utilities.deserializeObject(fileName);
-            }
-        }
-        else {
-            titleLabel.setText(cookbookTitle);
-            Utilities.loadRecipes(recipeTableData, this.recipes); // Sort the new list and update the table
-        }
-
         // Event Handler for the Add Button
         addRecipeButton.setOnAction(e -> {
 
@@ -246,14 +251,14 @@ public class Main extends Application {
                             // Create a new recipe based off what the user inputted
                             Recipe recipe = new Recipe(recipeNameResult.get(), difficultyRatingResult.get(), Double.parseDouble(totalTimeResult.get()), Integer.parseInt(servingsResult.get()));
 
-                            // Make sure this recipe isn't already in the cookbook
-                            for (Recipe currRecipe : this.recipes) {
-                                if (currRecipe.getName().equals(recipe.getName()) && currRecipe.getDifficultyRating().equals(recipe.getDifficultyRating()) && currRecipe.getTotalTime() == recipe.getTotalTime() && currRecipe.getServings() == recipe.getServings()) {
-                                    // Display a popup to the user to let the user know not to create duplicate recipes
-                                    Alert failedAttempt = Utilities.createAlert(Alert.AlertType.ERROR, "Error", "This cookbook already contains the recipe you are trying to create!", null);
-                                    failedAttempt.showAndWait();
-                                    return; // The recipe is already in the cookbook, so get out of the process
-                                }
+                            // Fill the tree with the contents of the ArrayList
+                            this.recipesTree.populate(this.recipes);
+                            // Search for the recipe
+                            if (this.recipesTree.search(recipe)) {
+                                // Display a popup to the user to let the user know not to create duplicate recipes
+                                Alert failedAttempt = Utilities.createAlert(Alert.AlertType.ERROR, "Error", "This cookbook already contains the recipe you are trying to create!", null);
+                                failedAttempt.showAndWait();
+                                return; // The recipe is already in the cookbook, so get out of the process
                             }
 
                             // Create a file name
@@ -311,9 +316,8 @@ public class Main extends Application {
                         // Create a popup to let the user know of the success
                         Alert successfulAttempt = Utilities.createAlert(Alert.AlertType.INFORMATION, "Success", "This cookbook has successfully been deleted!", null);
                         successfulAttempt.showAndWait(); // Display it
-
-                        stage.hide(); // Hide the screen whilst the initial prompt is up
-                        Utilities.initialUserPrompt(recipeTableData, this.recipes, titleLabel); // Prompt the user
+                        stage.hide(); // Hide the screen whilst the initial prompt is u
+                        this.recipes = Utilities.initialUserPrompt(recipeTableData, this.recipes, titleLabel); // Prompt the user
                         stage.show(); // Show the screen again
                     }
                     // The file deletion has failed
@@ -417,12 +421,7 @@ public class Main extends Application {
         });
 
         // Create a new TableView to hold the ingredients
-        TableView<IngredientsTableProperties> ingredientsTable = new TableView<>();
-        ingredientsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        ingredientsTable.setPadding(new Insets(10, 10, 10, 10));
-        ingredientsTable.setFocusTraversable(false);
-        ingredientsTable.setLayoutX(25);
-        ingredientsTable.setLayoutY(200);
+        TableView<IngredientsTableProperties> ingredientsTable = (TableView<IngredientsTableProperties>) Utilities.createTableView(25, 200);
 
         // Create a list to hold all the rows of the table
         ObservableList<IngredientsTableProperties> ingredientsTableData = FXCollections.observableArrayList();
@@ -479,12 +478,7 @@ public class Main extends Application {
 
 
         // Create a new TableView to hold the directions
-        TableView<DirectionsTableProperties> directionsTable = new TableView<>();
-        directionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        directionsTable.setPadding(new Insets(10, 10, 10, 10));
-        directionsTable.setFocusTraversable(false);
-        directionsTable.setLayoutX(535);
-        directionsTable.setLayoutY(200);
+        TableView<DirectionsTableProperties> directionsTable = (TableView<DirectionsTableProperties>) Utilities.createTableView(535, 200);
 
         // Create a list to hold all the rows of the table
         ObservableList<DirectionsTableProperties> directionsTableData = FXCollections.observableArrayList();
@@ -568,7 +562,7 @@ public class Main extends Application {
                         String fileName = "Cookbooks\\" + cookbookTitle + ".dat";
 
                         // Add the ingredient to the ingredient list of the recipe
-                        recipe.getIngredientsList().put(ingredientNameResult.get(), new IngredientUnits(Double.parseDouble(ingredientAmountResult.get()), measuringUnitsResult.get())); // TODO
+                        recipe.getIngredientsList().put(ingredientNameResult.get(), new IngredientUnits(Double.parseDouble(ingredientAmountResult.get()), measuringUnitsResult.get()));
 
                         // Save the recipe within this cookbook file
                         Utilities.serializeObject(fileName, this.recipes);
