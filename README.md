@@ -25,9 +25,10 @@ Compared to my competitors, my application will be easy to use and navigate and 
 
 ### UML Class Diagram:
 
-![UML_IMG#1](https://user-images.githubusercontent.com/100208400/167132717-de53e151-dfba-4a57-9a32-de963023f93d.png)
-![UML_IMG#2](https://user-images.githubusercontent.com/100208400/167132730-bd13215b-185d-4939-8a23-f72bd52bfd1f.png)
-![UML_IMG#3](https://user-images.githubusercontent.com/100208400/167132739-368e9455-94a2-4d33-ab01-90fa08a23a69.png)
-![UML_IMG#4](https://user-images.githubusercontent.com/100208400/167132757-01932a02-cd18-466c-91dc-25749f647505.png)
-![UML_IMG#5](https://user-images.githubusercontent.com/100208400/167132768-15efbb70-4bec-414f-b7de-aa77f5347ae9.png)
-![UML_IMG#6](https://user-images.githubusercontent.com/100208400/167132787-7a12c2b5-f6f2-4bf8-9999-81325baa648d.png)
+![UML_IMG#1](https://user-images.githubusercontent.com/100208400/167640567-21e3fb15-fc37-4c06-a062-4e4ccf85e89c.png)
+![UML_IMG#2](https://user-images.githubusercontent.com/100208400/167640594-8689a6a1-6e16-4f52-8d84-fde2be6b0157.png)
+![UML_IMG#7](https://user-images.githubusercontent.com/100208400/167640625-fc823d7f-c5fb-49ea-a148-5c36247d569e.png)
+![UML_IMG#3](https://user-images.githubusercontent.com/100208400/167640654-15a60543-9945-495e-8dd7-158e36535c11.png)
+![UML_IMG#4](https://user-images.githubusercontent.com/100208400/167640668-8ba20587-caaa-4813-960a-29461d5f3d88.png)
+![UML_IMG#5](https://user-images.githubusercontent.com/100208400/167640686-225815d7-6b4b-4257-a73b-648906a0027d.png)
+![UML_IMG#6](https://user-images.githubusercontent.com/100208400/167640702-5051d3fc-f5b4-4067-822a-b8d6e3100ff7.png)
