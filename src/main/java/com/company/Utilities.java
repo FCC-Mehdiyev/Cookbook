@@ -250,18 +250,10 @@ public class Utilities {
      * @return the index of the recipe in an ArrayList of type Recipe
      */
     public static int findRecipe(ArrayList<Recipe> recipes, Recipe recipe) {
-
-        // Iterate through all the recipes in the given ArrayList
-        for (Recipe currRecipe : recipes)
-            // Check if the name, difficulty rating, total time, and servings are equal to one another
-            if (currRecipe.getName().equals(recipe.getName()) && currRecipe.getDifficultyRating().equals(recipe.getDifficultyRating()) &&
-                    currRecipe.getTotalTime() == recipe.getTotalTime() && currRecipe.getServings() == recipe.getServings())
-                // Return the index of the recipe
-                return recipes.indexOf(currRecipe);
-
-        // If the recipe cannot be found, return a -1 to signify the list lacking the recipe
-        return -1;
-
+        // Create a new thread
+        RecipeFinder thread = new RecipeFinder(recipes, recipe);
+        thread.start(); // Start the thread
+        return thread.getIndex(); // Return the index of the specific recipe once found
     }
 
     /**

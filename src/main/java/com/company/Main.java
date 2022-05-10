@@ -62,6 +62,15 @@ public class Main extends Application {
             appInfo.show();
         });
 
+        // Create a button to view all saved cookbooks
+        Button viewCookbooksButton = Utilities.createButton("View Cookbooks", 115, 55, 0, 0);
+        // Event handler for the button press
+        viewCookbooksButton.setOnAction(e -> {
+           // Create a new alert that contains a message with the list of cookbooks
+           Alert cookbookList = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Help.getCookbooks(), null);
+           cookbookList.show();
+        });
+
         // Create an imageview to display the application logo
         try {
             // Retrieve the image from via its path
@@ -69,7 +78,7 @@ public class Main extends Application {
             ImageView imageView = new ImageView(image);
             // Position it
             imageView.setLayoutX(25);
-            imageView.setLayoutY(400);
+            imageView.setLayoutY(425);
             // Resize it and preserve the ratio
             imageView.setFitHeight(200);
             imageView.setFitWidth(200);
@@ -82,19 +91,19 @@ public class Main extends Application {
         // Create a vertical box to hold primary buttons
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        vBox.setLayoutX(110);
-        vBox.setLayoutY(100);
+        vBox.setLayoutX(100);
+        vBox.setLayoutY(80);
 
         // Create a button that will add new recipes to the table
-        Button addRecipeButton = Utilities.createButton("Add", 100, 55, 0, 0);
+        Button addRecipeButton = Utilities.createButton("Add Recipe", 115, 55, 0, 0);
         // Create a button that will load a new cookbook
-        Button loadCookbookButton = Utilities.createButton("Load", 100, 55, 0, 0);
+        Button loadCookbookButton = Utilities.createButton("Load Cookbook", 115, 55, 0, 0);
         // Create a button that will create a new cookbook
-        Button newCookbookButton = Utilities.createButton("New", 100, 55, 0, 0);
+        Button newCookbookButton = Utilities.createButton("New Cookbook", 115, 55, 0, 0);
         // Create a button that will delete the current cookbook
-        Button deleteCookbookButton = Utilities.createButton("Delete", 100, 55, 0, 0);
+        Button deleteCookbookButton = Utilities.createButton("Delete Cookbook", 115, 55, 0, 0);
         // Add the primary buttons to the vertical box
-        vBox.getChildren().addAll(addRecipeButton, loadCookbookButton, newCookbookButton, deleteCookbookButton);
+        vBox.getChildren().addAll(addRecipeButton, loadCookbookButton, newCookbookButton, deleteCookbookButton, viewCookbooksButton);
 
 
         // Create a TableView for recipes
