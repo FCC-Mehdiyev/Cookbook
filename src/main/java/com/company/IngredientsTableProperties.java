@@ -16,7 +16,7 @@ public class IngredientsTableProperties {
     private String ingredientName; // The name of the ingredient
     private String ingredientAmount; // The amount of the ingredient used in the recipe
     private String measuringUnits; // The units of the amount
-    private Button deleteButton; // The button to delete the row, located on the fourth column
+    private final Button deleteButton; // The button to delete the row, located on the fourth column
 
     /** Construct a default Properties object */
     public IngredientsTableProperties() {

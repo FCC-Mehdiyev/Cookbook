@@ -10,7 +10,7 @@ package com.company;
 
 import java.io.Serializable;
 
-public class  IngredientUnits implements Serializable, Comparable<IngredientUnits> {
+public class IngredientUnits implements Serializable, Comparable<IngredientUnits> {
 
     // Instance variables
     private double amount; // The amount of the ingredient needed in the recipe

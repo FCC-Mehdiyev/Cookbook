@@ -14,7 +14,7 @@ public class DirectionsTableProperties {
 
     // Instance variables
     private String instruction; // The instructions on how to make the dish, on a step-by-step basis
-    private Button deleteButton; // The button to delete the row, located on the fourth column
+    private final Button deleteButton; // The button to delete the row, located on the fourth column
 
     /** Construct a default Properties object */
     public DirectionsTableProperties() {

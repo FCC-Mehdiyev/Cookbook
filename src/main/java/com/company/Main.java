@@ -1,13 +1,10 @@
 // **********************************************************************************
 // Title: Cookbook
+// Class Name: Main
 // Author: Ayhan Mehdiyev
-// Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: Cookbook/src/main/java/com/company/Main.java
 // Description:
-//              This is my major project assignment: Cookbook.
-//              Essentially, this application will allow users
-//              to create various cookbooks and save all kinds
-//              of recipes within the books.
+//              This is the main class where the screens of the application are created.
 // **********************************************************************************
 package com.company;
 
@@ -30,8 +27,7 @@ import java.util.*;
 
 public class Main extends Application {
 
-    private ArrayList<Recipe> recipes = new ArrayList<>(); // An ArrayList to hold all current recipes
-    private SimpleBST<Recipe> recipesTree = new SimpleBST<>(); // A Binary Search Tree to transfer the recipes to when needed
+    private ArrayList<Recipe> recipes = new ArrayList<Recipe>(); // An ArrayList to hold all current recipes
 
     @Override
     public void start(Stage stage) {
@@ -58,7 +54,7 @@ public class Main extends Application {
         // Event handler for the button press
         helpButton.setOnAction(e -> {
             // Create a new alert that contains a message about what the application is
-            Alert appInfo = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Help.about(), null);
+            Alert appInfo = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Utilities.about(), null);
             appInfo.show();
         });
 
@@ -67,7 +63,7 @@ public class Main extends Application {
         // Event handler for the button press
         viewCookbooksButton.setOnAction(e -> {
            // Create a new alert that contains a message with the list of cookbooks
-           Alert cookbookList = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Help.getCookbooks(), null);
+           Alert cookbookList = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Utilities.getCookbooks(), null);
            cookbookList.show();
         });
 
@@ -159,20 +155,11 @@ public class Main extends Application {
                     {
                         // Action handler
                         button.setOnAction(e -> {
-                            // Create a temporary recipe from the inputs
-                            Recipe tempRecipe = new Recipe(recipeTableData.get(getIndex()).getRecipeName(), recipeTableData.get(getIndex()).getDifficultyRating(),
-                                    Double.parseDouble(recipeTableData.get(getIndex()).getTotalTime()), Integer.parseInt(recipeTableData.get(getIndex()).getServings()));
-                            // Fill the tree with the contents of the ArrayList
-                            recipesTree.populate(recipes);
-                            // Double check to make sure the recipe exists in the tree
-                            if (recipesTree.search(tempRecipe)) {
-                                // Create a path to the recipe
-                                ArrayList<SimpleBST.TreeNode<Recipe>> path = recipesTree.path(tempRecipe);
-                                // Retrieve the recipe that the user has opened
-                                Recipe recipe = path.get(path.size() - 1).element; // The last element is the recipe
-                                // Run the second screen
-                                initiateScreenTwo(stage, recipe, titleLabel.getText());
-                            }
+                            // Retrieve the recipe that the user has opened
+                            Recipe recipe = recipes.get(Utilities.findRecipe(recipes, new Recipe(recipeTableData.get(getIndex()).getRecipeName(), recipeTableData.get(getIndex()).getDifficultyRating(),
+                                    Double.parseDouble(recipeTableData.get(getIndex()).getTotalTime()), Integer.parseInt(recipeTableData.get(getIndex()).getServings()))));
+                            // Run the second screen
+                            initiateScreenTwo(stage, recipe, titleLabel.getText());
                         });
                     }
 
@@ -260,14 +247,14 @@ public class Main extends Application {
                             // Create a new recipe based off what the user inputted
                             Recipe recipe = new Recipe(recipeNameResult.get(), difficultyRatingResult.get(), Double.parseDouble(totalTimeResult.get()), Integer.parseInt(servingsResult.get()));
 
-                            // Fill the tree with the contents of the ArrayList
-                            this.recipesTree.populate(this.recipes);
-                            // Search for the recipe
-                            if (this.recipesTree.search(recipe)) {
-                                // Display a popup to the user to let the user know not to create duplicate recipes
-                                Alert failedAttempt = Utilities.createAlert(Alert.AlertType.ERROR, "Error", "This cookbook already contains the recipe you are trying to create!", null);
-                                failedAttempt.showAndWait();
-                                return; // The recipe is already in the cookbook, so get out of the process
+                            // Make sure this recipe isn't already in the cookbook
+                            for (Recipe currRecipe : this.recipes) {
+                                if (currRecipe.getName().equals(recipe.getName()) && currRecipe.getDifficultyRating().equals(recipe.getDifficultyRating()) && currRecipe.getTotalTime() == recipe.getTotalTime() && currRecipe.getServings() == recipe.getServings()) {
+                                    // Display a popup to the user to let the user know not to create duplicate recipes
+                                    Alert failedAttempt = Utilities.createAlert(Alert.AlertType.ERROR, "Error", "This cookbook already contains the recipe you are trying to create!", null);
+                                    failedAttempt.showAndWait();
+                                    return; // The recipe is already in the cookbook, so get out of the process
+                                }
                             }
 
                             // Create a file name

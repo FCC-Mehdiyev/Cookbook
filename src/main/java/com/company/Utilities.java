@@ -17,6 +17,7 @@ import javafx.scene.text.FontWeight;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -250,10 +251,16 @@ public class Utilities {
      * @return the index of the recipe in an ArrayList of type Recipe
      */
     public static int findRecipe(ArrayList<Recipe> recipes, Recipe recipe) {
-        // Create a new thread
-        RecipeFinder thread = new RecipeFinder(recipes, recipe);
-        thread.start(); // Start the thread
-        return thread.getIndex(); // Return the index of the specific recipe once found
+        // Iterate through all the recipes in the given ArrayList
+        for (Recipe currRecipe : recipes)
+            // Check if the name, difficulty rating, total time, and servings are equal to one another
+            if (currRecipe.getName().equals(recipe.getName()) && currRecipe.getDifficultyRating().equals(recipe.getDifficultyRating()) &&
+                    currRecipe.getTotalTime() == recipe.getTotalTime() && currRecipe.getServings() == recipe.getServings())
+                // Return the index of the recipe
+                return recipes.indexOf(currRecipe);
+
+        // If the recipe cannot be found, return a -1 to signify the list lacking the recipe
+        return -1;
     }
 
     /**
@@ -296,7 +303,7 @@ public class Utilities {
         ingredientsTableData.clear();
 
         // Add each ingredient to the table
-        for (SimpleMap.Entry<String, IngredientUnits> ingredientEntry : recipe.getIngredientsList().entrySet())
+        for (HashMap.Entry<String, IngredientUnits> ingredientEntry : recipe.getIngredientsList().entrySet())
             ingredientsTableData.add(new IngredientsTableProperties(ingredientEntry.getKey(), String.valueOf(ingredientEntry.getValue().getAmount()), ingredientEntry.getValue().getUnits().toString()));
     }
 
@@ -448,5 +455,37 @@ public class Utilities {
         return alert;
     }
 
+    /**
+     * Returns a String which lists each cookbook that is currently in the saved folder
+     *
+     * @return a String that contains every saved cookbook
+     */
+    public static String getCookbooks() {
+        // Create a list to store each cookbook name
+        List<String> cookbookNames = new ArrayList<String>();
+        // Get into the directory and retrieve a list of all files in it
+        File[] files = new File("Cookbooks").listFiles();
+        assert files != null; // The folder should exist, so assert it
+        // Traverse through the list of files
+        for (File file : files) {
+            // Check if it truly is a file
+            if (file.isFile())
+                // Add the file name (cutting off the type via a substring) to the list of names
+                cookbookNames.add(file.getName().substring(0, file.getName().length() - 4));
+        }
 
+        // Return the names
+        return "Cookbooks: " + cookbookNames;
+    }
+
+    /**
+     * Returns a String about what the application is and what it does
+     *
+     * @return a String containing information about the application
+     */
+    public static String about() {
+        return "Cookbook is an application where you can store and keep track of as many recipes as you want!\n" +
+                "You cannot create duplicate cookbooks, and are not intended to create recipes of the same name.\n" +
+                "However, you can get around the recipes restriction through editing the recipe to change the name.";
+    }
 }

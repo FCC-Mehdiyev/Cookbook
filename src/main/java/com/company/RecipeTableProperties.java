@@ -17,8 +17,8 @@ public class RecipeTableProperties {
     private String difficultyRating; // A rating from 1 to 3 on how difficult it is to make this dish
     private String totalTime; // The total time it will take to create this dish
     private String servings; // The amount of servings this recipe will create
-    private Button openButton; // The button to open the recipe, located on the third column
-    private Button deleteButton; // The button to delete the row, located on the fourth column
+    private final Button openButton; // The button to open the recipe, located on the third column
+    private final Button deleteButton; // The button to delete the row, located on the fourth column
 
     /** Construct a default Properties object */
     public RecipeTableProperties() {
