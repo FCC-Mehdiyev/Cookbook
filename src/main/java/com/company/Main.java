@@ -11,12 +11,16 @@ package com.company;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -47,10 +51,10 @@ public class Main extends Application {
         parentPane.setMinSize(900, 650);
 
         // Create a title label for the cookbook
-        Label titleLabel = Utilities.createLabel("", 40, 45, 0);
+        Label titleLabel = Utilities.createLabel("", 40, 45, 15);
 
         // Create a help button
-        Button helpButton = Utilities.createButton("?", 25, 25, 865, 10);
+        Button helpButton = Utilities.createButton("?", FontWeight.EXTRA_BOLD, 15, "#3793b4", 25, 25, 854, 10);
         // Event handler for the button press
         helpButton.setOnAction(e -> {
             // Create a new alert that contains a message about what the application is
@@ -58,26 +62,32 @@ public class Main extends Application {
             appInfo.show();
         });
 
-        // Create a button to view all saved cookbooks
-        Button viewCookbooksButton = Utilities.createButton("View Cookbooks", 115, 55, 0, 0);
-        // Event handler for the button press
-        viewCookbooksButton.setOnAction(e -> {
-           // Create a new alert that contains a message with the list of cookbooks
-           Alert cookbookList = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Utilities.getCookbooks(), null);
-           cookbookList.show();
-        });
-
         // Create an imageview to display the application logo
         try {
-            // Retrieve the image from via its path
+            // Retrieve the image from the file path
             Image image = new Image(new FileInputStream("src/main/CookbookLogo.png"));
-            ImageView imageView = new ImageView(image);
+            PixelReader reader = image.getPixelReader();
+            // Get the width and height of the image
+            int imageWidth = (int) image.getWidth();
+            int imageHeight = (int) image.getHeight();
+            WritableImage wImage = new WritableImage(imageWidth, imageHeight);
+            PixelWriter writer = wImage.getPixelWriter();
+            // Iterate through every pixel of the image
+            for(int y = 0; y < imageHeight; y++) {
+                for(int x = 0; x < imageWidth; x++) {
+                    // Invert each pixel color
+                    Color color = reader.getColor(x, y);
+                    writer.setColor(x, y, color.invert());
+                }
+            }
+            // Create an image view out of the modified image
+            ImageView imageView = new ImageView(wImage);
             // Position it
-            imageView.setLayoutX(25);
-            imageView.setLayoutY(425);
+            imageView.setLayoutX(10);
+            imageView.setLayoutY(430);
             // Resize it and preserve the ratio
-            imageView.setFitHeight(200);
-            imageView.setFitWidth(200);
+            imageView.setFitHeight(250);
+            imageView.setFitWidth(250);
             imageView.setPreserveRatio(true);
             parentPane.getChildren().add(imageView);
         } catch (Exception ex) {
@@ -86,25 +96,35 @@ public class Main extends Application {
 
         // Create a vertical box to hold primary buttons
         VBox vBox = new VBox();
+        vBox.setPadding(new Insets(5, 5, 5, 5));
         vBox.setSpacing(10);
-        vBox.setLayoutX(100);
+        vBox.setLayoutX(90);
         vBox.setLayoutY(80);
 
         // Create a button that will add new recipes to the table
-        Button addRecipeButton = Utilities.createButton("Add Recipe", 115, 55, 0, 0);
+        Button addRecipeButton = Utilities.createButton("Add Recipe", FontWeight.NORMAL, 10, "#36257b", 115, 55, 0, 0);
         // Create a button that will load a new cookbook
-        Button loadCookbookButton = Utilities.createButton("Load Cookbook", 115, 55, 0, 0);
+        Button loadCookbookButton = Utilities.createButton("Load Cookbook", FontWeight.NORMAL, 10, "#363b87", 115, 55, 0, 0);
         // Create a button that will create a new cookbook
-        Button newCookbookButton = Utilities.createButton("New Cookbook", 115, 55, 0, 0);
+        Button newCookbookButton = Utilities.createButton("New Cookbook", FontWeight.NORMAL, 10, "#36448b", 115, 55, 0, 0);
         // Create a button that will delete the current cookbook
-        Button deleteCookbookButton = Utilities.createButton("Delete Cookbook", 115, 55, 0, 0);
-        // Add the primary buttons to the vertical box
-        vBox.getChildren().addAll(addRecipeButton, loadCookbookButton, newCookbookButton, deleteCookbookButton, viewCookbooksButton);
+        Button deleteCookbookButton = Utilities.createButton("Delete Cookbook", FontWeight.NORMAL, 10, "#364c8f", 115, 55, 0, 0);
+        // Create a button to view all saved cookbooks
+        Button viewCookbooksButton = Utilities.createButton("View Cookbooks", FontWeight.NORMAL, 10, "#365293",115, 55, 0, 0);
+        // Event handler for the button press
+        viewCookbooksButton.setOnAction(e -> {
+            // Create a new alert that contains a message with the list of cookbooks
+            Alert cookbookList = Utilities.createAlert(Alert.AlertType.INFORMATION, "Cookbook", Utilities.getCookbooks(), null);
+            cookbookList.show();
+        });
 
 
         // Create a TableView for recipes
         TableView<RecipeTableProperties> recipeTable = (TableView<RecipeTableProperties>) Utilities.createTableView(225, 80);
-
+        recipeTable.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: transparent;"
+        );
         // Create a list to hold all the rows of the table
         ObservableList<RecipeTableProperties> recipeTableData = FXCollections.observableArrayList();
         recipeTable.setItems(recipeTableData);
@@ -326,8 +346,22 @@ public class Main extends Application {
             }
         });
 
+        // Add the primary buttons to the vertical box
+        vBox.getChildren().addAll(addRecipeButton, loadCookbookButton, newCookbookButton, deleteCookbookButton, viewCookbooksButton);
         // Add all screen nodes to the parent pane
         parentPane.getChildren().addAll(titleLabel, helpButton, vBox, recipeTable);
+
+        // Set the background of the screen to a gradient
+        parentPane.setBackground(new Background(new BackgroundFill(new LinearGradient(
+                0, 0, 1, 1, true,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#36096d")),
+                new Stop(1, Color.web("#37d5d6"))),
+                CornerRadii.EMPTY,
+                Insets.EMPTY))
+        );
+
+
         // Create a scene to hold the parent pane
         Scene scene = new Scene(parentPane);
         // Set up the stage
@@ -355,7 +389,7 @@ public class Main extends Application {
         titleLabel.setTextAlignment(TextAlignment.CENTER); // Center align the text
 
         // Create the back button to allow the user to go back to the first screen
-        Button backButton = Utilities.createButton("Back", 100, 55, 50, 25);
+        Button backButton = Utilities.createButton("Back", FontWeight.NORMAL,10, "#36267c", 100, 55, 50, 25);
         // Event handler for the back button
         backButton.setOnAction(e -> {
             // Go back to the first screen
@@ -363,7 +397,7 @@ public class Main extends Application {
         });
 
         // Create the edit button to allow the user to change some recipe details
-        Button editButton = Utilities.createButton("Edit", 100, 55, 750, 25);
+        Button editButton = Utilities.createButton("Edit", FontWeight.NORMAL, 10, "#3790b2", 100, 55, 750, 25);
         // Event handler for the edit button
         editButton.setOnAction(e -> {
 
@@ -418,7 +452,10 @@ public class Main extends Application {
 
         // Create a new TableView to hold the ingredients
         TableView<IngredientsTableProperties> ingredientsTable = (TableView<IngredientsTableProperties>) Utilities.createTableView(25, 200);
-
+        ingredientsTable.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: transparent;"
+        );
         // Create a list to hold all the rows of the table
         ObservableList<IngredientsTableProperties> ingredientsTableData = FXCollections.observableArrayList();
         ingredientsTable.setItems(ingredientsTableData); // Set the table's list to the one that was just created
@@ -475,7 +512,10 @@ public class Main extends Application {
 
         // Create a new TableView to hold the directions
         TableView<DirectionsTableProperties> directionsTable = (TableView<DirectionsTableProperties>) Utilities.createTableView(535, 200);
-
+        directionsTable.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: transparent;"
+        );
         // Create a list to hold all the rows of the table
         ObservableList<DirectionsTableProperties> directionsTableData = FXCollections.observableArrayList();
         directionsTable.setItems(directionsTableData); // Set the table's list to the one that was just created
@@ -523,7 +563,7 @@ public class Main extends Application {
 
 
         // Create a button to add entries to the ingredients table
-        Button newIngredientButton = Utilities.createButton("New Ingredient", 60, 40, 175, 605);
+        Button newIngredientButton = Utilities.createButton("New Ingredient", FontWeight.NORMAL, 10, "#3675a5", 60, 40, 175, 605);
         // Event handler for the button press
         newIngredientButton.setOnAction(e -> {
 
@@ -570,7 +610,7 @@ public class Main extends Application {
 
 
         // Create a button to add entries to the directions table
-        Button newDirectionButton = Utilities.createButton("New Direction", 60, 40, 650, 605);
+        Button newDirectionButton = Utilities.createButton("New Direction", FontWeight.NORMAL, 10, "#37bdc9", 60, 40, 650, 605);
         // Event handler for the button press
         newDirectionButton.setOnAction(e -> {
 
@@ -595,6 +635,17 @@ public class Main extends Application {
 
         // Add all nodes to the parent pane
         parentPane.getChildren().addAll(titleLabel, backButton, editButton, ingredientsTable, directionsTable, newIngredientButton, newDirectionButton);
+
+        // Set the background of the screen to a gradient
+        parentPane.setBackground(new Background(new BackgroundFill(new LinearGradient(
+                0, 0, 1, 1, true,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#36096d")),
+                new Stop(1, Color.web("#37d5d6"))),
+                CornerRadii.EMPTY,
+                Insets.EMPTY))
+        );
+
         // Create a scene to hold the parent pane
         Scene scene = new Scene(parentPane);
         // Set up the stage

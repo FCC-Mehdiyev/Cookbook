@@ -12,6 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -332,19 +336,31 @@ public class Utilities {
      * Helper method to create a button
      *
      * @param text the text that will be placed within the button
+     * @param weight the text weight (i.e, bold, normal, etc.)
+     * @param fontSize the size of the text
+     * @param backgroundColor the button color in hex
      * @param minWidth the minimum width of the button
      * @param minHeight the minimum height of the button
      * @param layoutX the x coordinate within the plane
      * @param layoutY the y coordinate within the plane
      * @return a newly created Button based off the inputs from the user
      */
-    public static Button createButton(String text, int minWidth, int minHeight, int layoutX, int layoutY) {
+    public static Button createButton(String text, FontWeight weight, int fontSize, String backgroundColor, int minWidth, int minHeight, int layoutX, int layoutY) {
         // Create a button from the arguments
         Button button = new Button(text);
         button.setMinSize(minWidth, minHeight);
         button.setLayoutX(layoutX);
         button.setLayoutY(layoutY);
-        button.setFocusTraversable(false);
+        button.setStyle("-fx-border-color: white");
+        button.setTextFill(Color.WHITE);
+        button.setFont(Font.font("Verdana", weight, fontSize));
+        button.setBackground(new Background(new BackgroundFill(
+                Color.valueOf(backgroundColor),
+                CornerRadii.EMPTY,
+                Insets.EMPTY
+        )));
+        button.setOnMouseEntered(e -> button.setStyle("-fx-border-color: red"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-border-color: white"));
         return button;
     }
 
@@ -433,6 +449,7 @@ public class Utilities {
         label.setFont(Font.font("Consolas", FontWeight.BOLD, fontSize));
         label.setLayoutX(layoutX);
         label.setLayoutY(layoutY);
+        label.setTextFill(Color.WHITE);
         return label;
     }
 
