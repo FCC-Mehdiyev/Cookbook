@@ -1,5 +1,5 @@
 # Cookbook
-### Major Project Assignment for CMIS202 at FCC
+### FCC-CMIS202 Major Project Assignment 
 
 
 #### Who are the users of the software? 
@@ -11,7 +11,7 @@ The purpose of this software is to save cookbooks with recipes in them.
 
 
 #### Where and when will the software be used?
-This software can be used anytime and anywhere (as long as you have your laptop or computer).
+This software can be used anytime and anywhere (as long as you have a device to access the software).
 
 
 #### How does the software work?
@@ -22,3 +22,5 @@ When you open this application, you will be prompted to either load or create a 
 Compared to my competitors, my application will be easy to use and navigate and be usable without an internet connection.
 
 
+
+![image](https://user-images.githubusercontent.com/100208400/174336324-6cf03ece-c86b-4bc8-b354-6edacb54b31a.png)
