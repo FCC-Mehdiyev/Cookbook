@@ -19,8 +19,10 @@ When you open this application, you will be prompted to either load or create a 
 
 
 #### Why would anyone want to use the software over existing processes?
-Compared to my competitors, my application will be easy to use and navigate and be usable without an internet connection.
+Compared to my competitors, my application will be easy to use and navigate and be usable without an internet connection. Furthermore, users will be able to save any created recipe as a PDF, which can be super useful!
 
 
 
 ![image](https://user-images.githubusercontent.com/100208400/174336324-6cf03ece-c86b-4bc8-b354-6edacb54b31a.png)
+![image](https://user-images.githubusercontent.com/100208400/175460243-8db7e0a8-bd85-40f1-9efb-3b89cda664f6.png)
+![image](https://user-images.githubusercontent.com/100208400/175460253-d6b706ae-0d0e-414f-bfcc-f5ed476576d1.png)
