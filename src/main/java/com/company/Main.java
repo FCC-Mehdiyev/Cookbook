@@ -8,12 +8,17 @@
 // **********************************************************************************
 package com.company;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -25,8 +30,14 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 
 public class Main extends Application {
@@ -65,7 +76,7 @@ public class Main extends Application {
         // Create an imageview to display the application logo
         try {
             // Retrieve the image from the file path
-            Image image = new Image(new FileInputStream("src/main/CookbookLogo.png"));
+            javafx.scene.image.Image image = new javafx.scene.image.Image(new FileInputStream("src/main/CookbookLogo.png"));
             PixelReader reader = image.getPixelReader();
             // Get the width and height of the image
             int imageWidth = (int) image.getWidth();
@@ -450,7 +461,108 @@ public class Main extends Application {
             }
         });
 
-        // Create a new TableView to hold the ingredients
+        // Create the PDF button to allow the user to save the current recipe as a PDF
+        Button pdfButton = Utilities.createButton("PDF", FontWeight.NORMAL, 10, "#3790b2", 100, 55, 750, 90);
+        // Event handler for the PDF button
+        pdfButton.setOnAction(e -> {
+
+            try {
+
+                // Create the PDF document
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream("PDFs/" + recipe.getName() + ".pdf"));
+
+                // Create the needed fonts
+                Font infoFont = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+                Font listFont = FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.DARK_GRAY);
+
+                // Create a paragraph to display which cookbook the recipe is from
+                Paragraph cookbook = new Paragraph("Cookbook: " + cookbookTitle, infoFont);
+                cookbook.setAlignment(Element.ALIGN_CENTER);
+
+                // Get the cookbook logo, then resize it to make it smaller
+                BufferedImage originalImage = ImageIO.read(new FileInputStream("src/main/CookbookLogo.png"));
+                java.awt.Image resizedImage = originalImage.getScaledInstance(150, 119, java.awt.Image.SCALE_SMOOTH);
+                com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance(resizedImage, null);
+                image.setAlignment(Element.ALIGN_CENTER);
+
+                // Create a paragraph chunk to contain all the recipe's information
+                Paragraph recipeInfo = new Paragraph(
+                        "Recipe Name: " + recipe.getName() +
+                                "\nDifficulty Rating: " + recipe.getDifficultyRating() +
+                                "\nTotal Hours: " + recipe.getTotalTime() +
+                                "\nServings: " + recipe.getServings() + "\n\n\n", infoFont
+                );
+                recipeInfo.setAlignment(Element.ALIGN_CENTER);
+
+                // Create a header for the ingredients
+                Paragraph ingredientHeader = new Paragraph("Ingredients:", infoFont);
+                ingredientHeader.setAlignment(Element.ALIGN_LEFT);
+
+                // Create a paragraph chunk for the ingredients
+                Paragraph ingredients = new Paragraph("", listFont);
+                ingredients.setAlignment(Element.ALIGN_LEFT);
+                ingredients.setIndentationLeft(75f);
+                // Add every ingredient, its amount, and its units to the paragraph
+                int counter = 1;
+                for (Map.Entry<String, IngredientUnits> map : recipe.getIngredientsList().entrySet()) {
+                    ingredients.add(counter + ". " + map.getKey() + " (" + map.getValue().getAmount() + ", " + map.getValue().getUnits() + ")\n");
+                    counter++;
+                }
+
+                // Create a header for the directions
+                Paragraph directionHeader = new Paragraph("Directions:", infoFont);
+                directionHeader.setAlignment(Element.ALIGN_LEFT);
+
+                // Create a paragraph chunk for the directions
+                Paragraph directions = new Paragraph("", listFont);
+                directions.setAlignment(Element.ALIGN_LEFT);
+                directions.setIndentationLeft(75f);
+                // Add every direction to the paragraph
+                counter = 1;
+                for (String direction : recipe.getDirectionsList()) {
+                    directions.add(counter + ". " + direction + "\n");
+                    counter++;
+                }
+
+                // Open the document to add the info
+                document.open();
+
+                // Add all the recipe information to the document
+                document.add(cookbook);
+                document.add(image);
+                document.add(recipeInfo);
+                document.add(ingredientHeader);
+                document.add(ingredients);
+                document.add(directionHeader);
+                document.add(directions);
+
+                // Close the document
+                document.close();
+
+                // Get the PDF path
+                Path path = Paths.get("PDFs/" + recipe.getName() + ".pdf");
+                // Display what happened to the user and show the location of the PDF
+                Alert alert = Utilities.createAlert(Alert.AlertType.INFORMATION, "Recipe Saved!", "This recipe has been saved as a PDF!", "The PDF file can be found at: " + path);
+                alert.showAndWait();
+
+                // Open the PDF for the user to see
+                File file = path.toFile();
+                if (Desktop.isDesktopSupported()) {
+                    Desktop desktop = Desktop.getDesktop();
+                    if (file.exists())
+                        desktop.open(file);
+                }
+
+
+            } catch (DocumentException | IOException ex) {
+                ex.printStackTrace();
+            }
+
+     });
+
+
+            // Create a new TableView to hold the ingredients
         TableView<IngredientsTableProperties> ingredientsTable = (TableView<IngredientsTableProperties>) Utilities.createTableView(25, 200);
         ingredientsTable.setStyle(
                 "-fx-background-color: transparent;" +
@@ -634,7 +746,7 @@ public class Main extends Application {
         });
 
         // Add all nodes to the parent pane
-        parentPane.getChildren().addAll(titleLabel, backButton, editButton, ingredientsTable, directionsTable, newIngredientButton, newDirectionButton);
+        parentPane.getChildren().addAll(titleLabel, backButton, editButton, pdfButton, ingredientsTable, directionsTable, newIngredientButton, newDirectionButton);
 
         // Set the background of the screen to a gradient
         parentPane.setBackground(new Background(new BackgroundFill(new LinearGradient(
