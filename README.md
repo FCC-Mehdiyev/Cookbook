@@ -1,6 +1,4 @@
 # Cookbook
-### FCC-CMIS202 Major Project Assignment 
-
 
 #### Who are the users of the software? 
 Although this software is primarily aimed at users with a passion for cooking or baking, anyone that wants to save their recipes can use this software.
